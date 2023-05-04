@@ -2,6 +2,7 @@ package com.mobile.helping.women;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -17,12 +18,17 @@ public class InitialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_initial);
 
-        if (PermissionManager.isAllPermissionsApproved(this)) {
+        if (PermissionManager.isAllPermissionsApproved(this)
+                && PermissionManager.isGPSEnabled(this)) {
             startMainActivity();
         }
         binding.btnAllow.setOnClickListener(view -> {
             PermissionManager.requestPermissions(this, REQUEST_CODE_SUCCESS);
         });
+
+        if (!PermissionManager.isGPSEnabled(this)) {
+            PermissionManager.showSnackBarForGPS(getString(R.string.please_turn_on_gps), binding.getRoot(), this);
+        }
     }
 
     @Override
@@ -38,8 +44,11 @@ public class InitialActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CODE_SUCCESS) {
-            if (PermissionManager.isAllPermissionsApproved(this)) {
+            if (PermissionManager.isAllPermissionsApproved(this)
+                    && PermissionManager.isGPSEnabled(this)) {
                 startMainActivity();
+            } else if (!PermissionManager.isGPSEnabled(this)) {
+                PermissionManager.showSnackBarForGPS(getString(R.string.please_turn_on_gps), binding.getRoot(), this);
             } else {
                 showSnack();
             }
@@ -52,7 +61,7 @@ public class InitialActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void showSnack(){
+    private void showSnack() {
         PermissionManager.showSnackBar(
                 getString(R.string.camera_and_location_rationale),
                 binding.getRoot(),
