@@ -1,6 +1,7 @@
 package com.mobile.helping.women;
 
 import static android.content.ContentValues.TAG;
+import static com.mobile.helping.women.PermissionManager.isFreeSpace;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -13,6 +14,7 @@ import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -29,6 +31,8 @@ public class VideoRecorderService extends Service {
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
     private MediaRecorder mMediaRecorder;
+    private Handler mHandler;
+    private Runnable mCheckStorageRunnable;
 
     @Override
     public void onCreate() {
@@ -36,9 +40,8 @@ public class VideoRecorderService extends Service {
         mRecordingStatus = false;
         mSurfaceView = MainActivity.mSurfaceView;
         mSurfaceHolder = MainActivity.mSurfaceHolder;
-        if (!mRecordingStatus) {
-            startRecording();
-        }
+        startRecording();
+        checkingStorage();
     }
 
     @Override
@@ -51,6 +54,7 @@ public class VideoRecorderService extends Service {
                 stopSelf();
             }
         }
+        mHandler.post(mCheckStorageRunnable);
         return START_STICKY;
     }
 
@@ -61,26 +65,26 @@ public class VideoRecorderService extends Service {
 
     @Override
     public void onDestroy() {
-        stopRecording();
-        mRecordingStatus = false;
+        if (mRecordingStatus) {
+            stopRecording();
+            mRecordingStatus = false;
+        }
+        mHandler.removeCallbacks(mCheckStorageRunnable);
         super.onDestroy();
     }
 
-    public void startRecording() {
-        Toast.makeText(getBaseContext(), getString(R.string.recording_started), Toast.LENGTH_SHORT).show();
-
-        File videoFile = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".mp4");
+    private void startRecording() {
         if (mMediaRecorder == null) {
+            File videoFile = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                    getString(R.string.app_name) + "_" + System.currentTimeMillis() + ".mp4");
             mMediaRecorder = new MediaRecorder();
-
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
             mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_720P));
             mMediaRecorder.setOrientationHint(90);
             mMediaRecorder.setOutputFile(videoFile.getAbsolutePath());
-            mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
+            mMediaRecorder.setPreviewDisplay(MainActivity.mSurfaceHolder.getSurface());
             try {
                 mMediaRecorder.prepare();
             } catch (IOException e) {
@@ -89,6 +93,7 @@ public class VideoRecorderService extends Service {
             mMediaRecorder.start();
             mRecordingStatus = true;
             notificationForUser();
+            Toast.makeText(getBaseContext(), getString(R.string.recording_started), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -115,14 +120,13 @@ public class VideoRecorderService extends Service {
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Check the Weather",
-                    NotificationManager.IMPORTANCE_HIGH);
+                    NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
         }
         startForeground(1, notification);
     }
 
-    public void stopRecording() {
-        Toast.makeText(getBaseContext(), getString(R.string.recording_stopped), Toast.LENGTH_SHORT).show();
+    private void stopRecording() {
         if (mMediaRecorder != null) {
             try {
                 mMediaRecorder.stop();
@@ -132,6 +136,27 @@ public class VideoRecorderService extends Service {
             mMediaRecorder.reset();
             mMediaRecorder.release();
             mMediaRecorder = null;
+            Toast.makeText(getBaseContext(), getString(R.string.recording_stopped), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void checkingStorage() {
+        mHandler = new Handler();
+        mCheckStorageRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mRecordingStatus) {
+                    if (isFreeSpace()) {
+                        Log.d(TAG, "Recording...");
+                    } else {
+                        stopRecording();
+                        mRecordingStatus = false;
+                        stopForeground(true);
+                        Toast.makeText(getBaseContext(), getString(R.string.check_free_storage), Toast.LENGTH_LONG).show();
+                    }
+                }
+                mHandler.postDelayed(this, 5000);
+            }
+        };
     }
 }

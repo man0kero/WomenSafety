@@ -1,5 +1,7 @@
 package com.mobile.helping.women;
 
+import static com.mobile.helping.women.PermissionManager.REQUEST_CODE_SUCCESS;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,7 +12,6 @@ import com.mobile.helping.women.databinding.ActivityInitialBinding;
 
 
 public class InitialActivity extends AppCompatActivity {
-    public static final int REQUEST_CODE_SUCCESS = 111;
     private ActivityInitialBinding binding;
 
     @Override
@@ -27,7 +28,7 @@ public class InitialActivity extends AppCompatActivity {
         });
 
         if (!PermissionManager.isGPSEnabled(this)) {
-            PermissionManager.showSnackBarForGPS(getString(R.string.please_turn_on_gps), binding.getRoot(), this);
+            PermissionManager.showSnackBarForGPS(binding.getRoot(), this);
         }
     }
 
@@ -48,9 +49,9 @@ public class InitialActivity extends AppCompatActivity {
                     && PermissionManager.isGPSEnabled(this)) {
                 startMainActivity();
             } else if (!PermissionManager.isGPSEnabled(this)) {
-                PermissionManager.showSnackBarForGPS(getString(R.string.please_turn_on_gps), binding.getRoot(), this);
+                PermissionManager.showSnackBarForGPS(binding.getRoot(), this);
             } else {
-                showSnack();
+                PermissionManager.showSnackBarForRationale(binding.getRoot(), this);
             }
         }
     }
@@ -59,13 +60,5 @@ public class InitialActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-    }
-
-    private void showSnack() {
-        PermissionManager.showSnackBar(
-                getString(R.string.camera_and_location_rationale),
-                binding.getRoot(),
-                this);
-
     }
 }

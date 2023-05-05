@@ -1,9 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">WomenSafety</string>
     <string name="camera_and_location_rationale">All permissions are required to use all functions of the app</string>
-    <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="sos_102" translatable="false">102</string>
     <string name="start_recording">start recording</string>
     <string name="help_message">Help message</string>
     <string name="inactive">inactive</string>
@@ -18,9 +15,9 @@
     <string name="please_turn_on_gps">Please turn on GPS</string>
     <string name="wait_to_update_location_and_try_again">Wait for the location to update and try again</string>
     <string name="stop_recording">stop recording</string>
-    <string name="help_my_last_location">Help!\nMy last location!\n</string>
+    <string name="help_my_last_location">"Help!\nMy last location!\n "</string>
     <string name="check_free_storage">Check if the storage is free</string>
     <string name="needed_access_for_using_this_feature">Permission is required to use this function</string>
     <string name="gps_is_off_it_must_be_turned_on">GPS is off, it must be turned on</string>
-    <string name="active" >active</string>
+    <string name="active">active</string>
 </resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camera_and_location_rationale">Для использования всех функций приложения нужны все разрешения</string>
+    <string name="start_recording">начать запись</string>
+    <string name="help_message">Сообщение о помощи</string>
+    <string name="inactive">неактивный</string>
+    <string name="location_status">Статус местоположения:</string>
+    <string name="must_grant_all_permissions">Для использования всех функций приложения и обеспечения вашей безопасности вы должны предоставить ВСЕ разрешения.</string>
+    <string name="done">Готово</string>
+    <string name="settings">Настройки</string>
+    <string name="recording_in_progress">Ведется запись</string>
+    <string name="tap_to_stop_recording">Нажмите, чтобы остановить запись</string>
+    <string name="recording_stopped">Запись остановлена (сохранена в \"Загрузки\")</string>
+    <string name="recording_started">Начало записи</string>
+    <string name="please_turn_on_gps">"Пожалуйста, включите GPS "</string>
+    <string name="wait_to_update_location_and_try_again">Подождите, пока локация обновится, и повторите попытку</string>
+    <string name="stop_recording">остановить запись</string>
+    <string name="help_my_last_location">"Помогите!\nМое последнее местоположение!\n"</string>
+    <string name="check_free_storage">Проверьте, свободно ли хранилище</string>
+    <string name="needed_access_for_using_this_feature">Необходимо разрешение для использования этой функции</string>
+    <string name="gps_is_off_it_must_be_turned_on">GPS выключен, его необходимо включить</string>
+    <string name="active">активный</string>
+</resources>

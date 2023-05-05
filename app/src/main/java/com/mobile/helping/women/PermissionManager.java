@@ -1,14 +1,21 @@
 package com.mobile.helping.women;
 
+import static android.content.ContentValues.TAG;
+
 import android.Manifest;
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 
 import androidx.core.app.ActivityCompat;
@@ -21,7 +28,7 @@ import java.util.List;
 
 
 public class PermissionManager {
-
+    public static final int REQUEST_CODE_SUCCESS = 111;
     static String[] perm = {
             Manifest.permission.CALL_PHONE,
             Manifest.permission.CAMERA,
@@ -106,6 +113,16 @@ public class PermissionManager {
                 && isPostNotificationsPermissionApproved(context);
     }
 
+    public static boolean isFreeSpace() {
+        StatFs statFs = new StatFs(Environment.getDataDirectory().getPath());
+        long availableSpace = statFs.getAvailableBytes();
+        long minFreeSpace = 300L * 1000 * 1000;
+
+        Log.d(TAG, "" + availableSpace / 1000 / 1000);
+        Log.d(TAG, "" + minFreeSpace / 1000 / 1000);
+        return availableSpace > minFreeSpace;
+    }
+
     public static void requestPermissions(Activity activity, int requestCode) {
         List<String> permissions = new ArrayList<>();
         if (!isCallPhonePermissionApproved(activity)) {
@@ -141,9 +158,8 @@ public class PermissionManager {
 
     }
 
-    public static void showSnackBar(
-            String mainText, View view, Activity activity) {
-        Snackbar.make(view, mainText, Snackbar.LENGTH_LONG)
+    public static void showSnackBarForRationale(View view, Activity activity) {
+        Snackbar.make(view, R.string.camera_and_location_rationale, Snackbar.LENGTH_LONG)
                 .setAction(R.string.settings, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -160,13 +176,14 @@ public class PermissionManager {
                     }
                 })
                 .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
-                .setBackgroundTint(activity.getColor(R.color.red))
+                .setBackgroundTint(Color.WHITE)
+                .setTextColor(Color.BLACK)
+                .setActionTextColor(Color.BLACK)
                 .show();
     }
 
-    public static void showSnackBarForGPS(
-            String mainText, View view, Activity activity) {
-        Snackbar.make(view, mainText, Snackbar.LENGTH_LONG)
+    public static void showSnackBarForGPS(View view, Activity activity) {
+        Snackbar.make(view, R.string.please_turn_on_gps, Snackbar.LENGTH_LONG)
                 .setAction(R.string.settings, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -175,7 +192,25 @@ public class PermissionManager {
                     }
                 })
                 .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
-                .setBackgroundTint(activity.getColor(R.color.red))
+                .setBackgroundTint(Color.WHITE)
+                .setTextColor(Color.BLACK)
+                .setActionTextColor(Color.BLACK)
+                .show();
+    }
+
+    public static void showSnackBarForStorage(View view, Activity activity) {
+        Snackbar.make(view, R.string.check_free_storage, Snackbar.LENGTH_LONG)
+                .setAction(R.string.settings, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS);
+                        activity.startActivity(intent);
+                    }
+                })
+                .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                .setBackgroundTint(Color.WHITE)
+                .setTextColor(Color.BLACK)
+                .setActionTextColor(Color.BLACK)
                 .show();
     }
 }
