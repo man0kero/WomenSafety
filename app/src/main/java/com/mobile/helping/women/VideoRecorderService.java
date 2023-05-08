@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Build;
@@ -94,6 +95,8 @@ public class VideoRecorderService extends Service {
             mRecordingStatus = true;
             notificationForUser();
             Toast.makeText(getBaseContext(), getString(R.string.recording_started), Toast.LENGTH_SHORT).show();
+            MainActivity.binding.btnRecord.setText(R.string.stop_recording);
+            MainActivity.binding.btnRecord.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.green_custom)));
         }
     }
 
@@ -137,6 +140,8 @@ public class VideoRecorderService extends Service {
             mMediaRecorder.release();
             mMediaRecorder = null;
             Toast.makeText(getBaseContext(), getString(R.string.recording_stopped), Toast.LENGTH_SHORT).show();
+            MainActivity.binding.btnRecord.setText(R.string.start_recording);
+            MainActivity.binding.btnRecord.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.grey)));
         }
     }
 

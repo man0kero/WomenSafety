@@ -1,6 +1,5 @@
 package com.mobile.helping.women;
 
-import static android.content.ContentValues.TAG;
 import static com.mobile.helping.women.PermissionManager.REQUEST_CODE_SUCCESS;
 import static com.mobile.helping.women.PermissionManager.isCameraPermissionApproved;
 import static com.mobile.helping.women.PermissionManager.isFreeSpace;
@@ -11,10 +10,7 @@ import static com.mobile.helping.women.PermissionManager.showSnackBarForRational
 import static com.mobile.helping.women.VideoRecorderService.mRecordingStatus;
 
 import android.annotation.SuppressLint;
-import android.app.admin.DevicePolicyManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
@@ -22,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
@@ -32,8 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.common.Feature;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -43,19 +36,30 @@ import com.google.android.gms.location.Priority;
 import com.mobile.helping.women.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    private static ActivityMainBinding binding;
-    private AdRequest adRequest;
-
-    private Handler checkingHandler;
-    private Runnable mRunnable;
     private static final int MSG_ACTIVE_LOCATION = 1;
     private static final int MSG_ACTIVE_INACTIVE = 0;
     private static final int MSG_RECORDING_TRUE = 3;
     private static final int MSG_RECORDING_FALSE = 2;
-
+    public static ActivityMainBinding binding;
     public static SurfaceHolder mSurfaceHolder;
     public static SurfaceView mSurfaceView;
+    private final Handler updateUiHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message inputMessage) {
+            switch (inputMessage.what) {
+                case MSG_ACTIVE_LOCATION:
+                    updateUI(getString(R.string.active), Color.GREEN);
+                    break;
 
+                case MSG_ACTIVE_INACTIVE:
+                    updateUI(getString(R.string.inactive), getColor(R.color.red_custom));
+                    break;
+            }
+        }
+    };
+    private AdRequest adRequest;
+    private Handler checkingHandler;
+    private Runnable mRunnable;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
@@ -100,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         stopLocationUpdate();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -123,37 +126,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private final Handler updateUiHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message inputMessage) {
-            switch (inputMessage.what) {
-                case MSG_ACTIVE_LOCATION:
-                    updateUI(getString(R.string.active), Color.GREEN, "loc_status");
-                    break;
+    private void updateUI(String text, int color) {
+        binding.textStatus.setTextColor(color);
+        binding.textStatus.setText(text);
 
-                case MSG_ACTIVE_INACTIVE:
-                    updateUI(getString(R.string.inactive), getColor(R.color.red_custom), "loc_status");
-                    break;
-
-                case MSG_RECORDING_TRUE:
-                    updateUI(getString(R.string.stop_recording), getColor(R.color.green_custom), "rec_button");
-                    break;
-
-                case MSG_RECORDING_FALSE:
-                    updateUI(getString(R.string.start_recording), getColor(R.color.grey), "rec_button");
-                    break;
-            }
-        }
-    };
-
-    private void updateUI(String text, int color, String view) {
-        if (view.equals("loc_status")) {
-            binding.textStatus.setTextColor(color);
-            binding.textStatus.setText(text);
-        } else if (view.equals("rec_button")) {
-            binding.btnRecord.setBackgroundTintList(ColorStateList.valueOf(color));
-            binding.btnRecord.setText(text);
-        }
     }
 
     private void initChecking() {
@@ -217,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void callingAlert() {
-        String phone = "tel:" + "123";
+        String phone = "tel:" + getString(R.string.sos_102);
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(phone));
         startActivity(intent);
     }

@@ -1,19 +1,20 @@
 <resources>
-    <string name="app_name" translatable="false">WomenSafety</string>
-    <string name="camera_and_location_rationale">All permissions are required to use all functions of the app</string>
-    <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="app_name" translatable="false">Help Women</string>
+    <string name="banner_id" translatable="false">ca-app-pub-9176260107574133/7619208711</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-9176260107574133~5066047624</string>
     <string name="sos_102" translatable="false">102</string>
+
     <string name="start_recording">start recording</string>
     <string name="help_message">Help message</string>
     <string name="inactive">inactive</string>
     <string name="location_status">Location status:</string>
+    <string name="camera_and_location_rationale">All permissions are required to use all functions of the app</string>
     <string name="must_grant_all_permissions">To use all features of the app and your security, you must grant ALL permissions.</string>
     <string name="done">Done</string>
     <string name="settings">Settings</string>
     <string name="recording_in_progress">Recording in progress</string>
     <string name="tap_to_stop_recording">Tap to stop recording</string>
-    <string name="recording_stopped">Recording stopped (saved to \"Downloads\")</string>
+    <string name="recording_stopped">Saved to \"Downloads\"</string>
     <string name="recording_started">Recording Started</string>
     <string name="please_turn_on_gps">Please turn on GPS</string>
     <string name="wait_to_update_location_and_try_again">Wait for the location to update and try again</string>

@@ -10,7 +10,7 @@
     <string name="settings">Параметри</string>
     <string name="recording_in_progress">Ведеться запис</string>
     <string name="tap_to_stop_recording">Натисніть, щоб зупинити запис</string>
-    <string name="recording_stopped">Запис зупинено (збережено в \"Завантаження\")</string>
+    <string name="recording_stopped">Збережено в \"Завантаження\"</string>
     <string name="recording_started">Запис розпочався</string>
     <string name="please_turn_on_gps">"Будь ласка, увімкніть GPS "</string>
     <string name="wait_to_update_location_and_try_again">Зачекайте, поки оновиться локація, і спробуйте ще раз</string>

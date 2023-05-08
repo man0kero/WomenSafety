@@ -4,7 +4,6 @@ import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -116,7 +115,7 @@ public class PermissionManager {
     public static boolean isFreeSpace() {
         StatFs statFs = new StatFs(Environment.getDataDirectory().getPath());
         long availableSpace = statFs.getAvailableBytes();
-        long minFreeSpace = 300L * 1000 * 1000;
+        long minFreeSpace = 200L * 1000 * 1000;
 
         Log.d(TAG, "" + availableSpace / 1000 / 1000);
         Log.d(TAG, "" + minFreeSpace / 1000 / 1000);
